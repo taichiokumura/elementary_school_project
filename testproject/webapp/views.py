@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 import cv2
 import numpy as np
@@ -20,8 +20,10 @@ def index(request):
         form = DocumentForm(request.POST, request.FILES)
         if form.is_valid():
             upload_image = form.save()
- 
             params['id'] = upload_image.id
+
+            # アップロードが成功したら、次の画面にリダイレクト
+            return redirect('webtestapp:preview', image_id=upload_image.id)
  
     return render(request, 'webtestapp/index.html', params)
 
@@ -69,4 +71,4 @@ def preview(request, image_id=0):
         'bw_url': bw_url  # 白黒画像のURLを追加
     }
 
-    return render(request, 'webtestapp/preview.html', params)
+    return render(request, 'webtestapp/index.html', params)
